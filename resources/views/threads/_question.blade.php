@@ -32,10 +32,14 @@
 <div class="card mb-3" v-else>
     <div class="card-header">
         <div class="level">
-            <img src="{{ $thread->creator->avatar_path }}" alt="{{ $thread->creator->name }}" width="25" height="25" class="mr-1">
+            <img src="{{ $thread->creator->avatar_path }}" 
+                alt="{{ $thread->creator->name }}" 
+                width="25" 
+                height="25" 
+                class="mr-1">
             <span class="flex">
                 <a href="{{ route('profiles', $thread->creator) }}">
-                    {{ $thread->creator->name }}
+                    {{ $thread->creator->name }} ({{ $thread->creator->reputation }} XP)
                 </a> posted: 
                 <span v-text="title"></span>
             </span>
