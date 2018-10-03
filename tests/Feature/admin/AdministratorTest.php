@@ -20,7 +20,10 @@ class AdministratorTest extends TestCase
     /** @test */
     public function an_administrator_can_access_the_administration_section()
     {
-        $administrator = factory(User::class)->states('administrator')->create();
+        $administrator = factory('App\User')->create();
+        config(['council.administrators' => [$administrator->email]]);
+        $this->signIn($administrator);
+
         $this->actingAs($administrator)
              ->get('/admin')
              ->assertStatus(Response::HTTP_OK);

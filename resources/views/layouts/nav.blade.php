@@ -52,7 +52,7 @@
                     
                     <user-notifications></user-notifications>
 
-                    @if (Auth::user()->isAdmin)
+                    @if (Auth::user()->isAdmin())
                         <li><a href="/admin"><span class="iconic iconic-cog" aria-hidden="true"></span></a></li>
                     @endif
 
