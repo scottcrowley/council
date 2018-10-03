@@ -2,8 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Events\ThreadReceivedNewReply;
+use App\Filters\ThreadFilters;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
 class Thread extends Model
@@ -17,14 +19,32 @@ class Thread extends Model
      */
     protected $guarded = [];
 
+    /**
+     * The relationships to always eager-load.
+     *
+     * @var array
+     */
     protected $with = ['creator', 'channel'];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
     protected $appends = ['isSubscribedTo'];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'locked' => 'boolean'
     ];
 
+    /**
+     * Boot the model.
+     */
     protected static function boot()
     {
         parent::boot();
@@ -53,16 +73,6 @@ class Thread extends Model
     }
 
     /**
-     * a thread has many replies
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function replies()
-    {
-        return $this->hasMany(Reply::class);
-    }
-
-    /**
      * a thread has a creator
      *
      * @return \Illuminate\Database\Eloquent\Relations\belongsTo
@@ -83,6 +93,26 @@ class Thread extends Model
     }
 
     /**
+     * a thread has many replies
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    /**
+     * A thread can have a best reply.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function bestReply()
+    {
+        return $this->hasOne(Reply::class, 'thread_id');
+    }
+
+    /**
      * add a reply to the thread
      *
      * @param array $reply
@@ -97,6 +127,13 @@ class Thread extends Model
         return $reply;
     }
 
+    /**
+     * Apply all relevant thread filters.
+     *
+     * @param  Builder       $query
+     * @param  ThreadFilters $filters
+     * @return Builder
+     */
     public function scopeFilter($query, $filters)
     {
         return $filters->apply($query);
@@ -140,6 +177,11 @@ class Thread extends Model
         return $this->hasMany(ThreadSubscription::class);
     }
 
+    /**
+     * Determine if the current user is subscribed to the thread.
+     *
+     * @return boolean
+     */
     public function getIsSubscribedToAttribute()
     {
         return $this->subscriptions()
@@ -147,6 +189,12 @@ class Thread extends Model
             ->exists();
     }
 
+    /**
+     * Determine if the thread has been updated since the user last read it.
+     *
+     * @param  User $user
+     * @return bool
+     */
     public function hasUpdatesFor($user)
     {
         if (!auth()->check()) {
@@ -158,9 +206,25 @@ class Thread extends Model
         return $this->updated_at > cache($key);
     }
 
+    /**
+     * Get the route key name.
+     *
+     * @return string
+     */
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    /**
+     * Access the body attribute.
+     *
+     * @param  string $body
+     * @return string
+     */
+    public function getBodyAttribute($body)
+    {
+        return \Purify::clean($body);
     }
 
     /**
@@ -171,29 +235,46 @@ class Thread extends Model
      */
     public function setSlugAttribute($value)
     {
-        $slug = str_slug($value);
-
-        if (static::whereSlug($slug)->exists()) {
-            $slug = "{$slug}-" . $this->id;
+        if (static::whereSlug($slug = str_slug($value))->exists()) {
+            $slug = "{$slug}-{$this->id}";
         }
 
         $this->attributes['slug'] = $slug;
     }
 
+    /**
+     * Mark the given reply as the best answer.
+     *
+     * @param Reply $reply
+     */
     public function markBestReply(Reply $reply)
     {
+        if ($this->hasBestReply()) {
+            Reputation::reduce($this->bestReply->owner, Reputation::BEST_REPLY_AWARDED);
+        }
+
         $this->update(['best_reply_id' => $reply->id]);
 
-        Reputation::award($reply->owner, Reputation::BEST_REPLY_MARKED);
+        Reputation::award($reply->owner, Reputation::BEST_REPLY_AWARDED);
     }
 
+    /**
+     * Determine if the thread has a current best reply.
+     *
+     * @return bool
+     */
+    public function hasBestReply()
+    {
+        return !is_null($this->best_reply_id);
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
     public function toSearchableArray()
     {
         return $this->toArray() + ['path' => $this->path()];
-    }
-
-    public function getBodyAttribute($body)
-    {
-        return \Purify::clean($body);
     }
 }
