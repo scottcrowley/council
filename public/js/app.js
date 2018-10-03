@@ -86949,7 +86949,7 @@ module.exports = {
         return model[prop] === user.id;
     },
     isAdmin: function isAdmin() {
-        return ['JohnDoe', 'JaneDoe'].includes(user.name);
+        return user.isAdmin;
     }
 };
 
