@@ -38,13 +38,12 @@ php artisan migrate
 
 ### Step 3.
 
-Until an administration portal is available, manually insert any number of "channels" (think of these as forum categories) into the "channels" table in your database.
-
-Once finished, clear your server cache, and you're all set to go!
-
+Finally, add one or more channels. Login with the following credentials:
+ ```
+email: admin@example.com
+password: admin
 ```
-php artisan cache:clear
-```
+ now visit: http://council.test/admin/channels and add at least one channel.
 
 ### Step 4.
 
