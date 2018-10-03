@@ -91216,22 +91216,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            active: this.activeSubscriber
+            isActive: this.activeSubscriber
         };
     },
 
 
     computed: {
         classes: function classes() {
-            return ['btn', this.active ? 'btn-primary' : 'btn-outline-secondary'];
+            return ['btn', this.isActive ? 'btn-primary' : 'btn-outline-secondary'];
         }
     },
 
     methods: {
         subscribe: function subscribe() {
-            axios[this.active ? 'delete' : 'post'](location.pathname + '/subscriptions');
+            axios[this.isActive ? 'delete' : 'post'](location.pathname + '/subscriptions');
 
-            this.active = !this.active;
+            this.isActive = !this.isActive;
         }
     }
 });
