@@ -25,7 +25,10 @@ class ThreadTest extends TestCase
     {
         $thread = create('App\Thread');
 
-        $this->assertEquals("/threads/{$thread->channel->slug}/{$thread->slug}", $thread->path());
+        $this->assertEquals(
+            "/threads/{$thread->channel->slug}/{$thread->slug}",
+            $thread->path()
+        );
     }
 
     /** @test */
@@ -37,7 +40,10 @@ class ThreadTest extends TestCase
     /** @test */
     public function a_thread_has_replies()
     {
-        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $this->thread->replies);
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $this->thread->replies
+        );
     }
 
     /** @test */
@@ -73,7 +79,7 @@ class ThreadTest extends TestCase
             ->thread
             ->subscribe()
             ->addReply([
-                'user_id' => 999,
+                'user_id' => create('App\User')->id,
                 'body' => 'Foobar'
             ]);
 
