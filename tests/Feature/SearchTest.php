@@ -11,24 +11,26 @@ class SearchTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    // public function a_user_can_search_threads()
-    // {
-    //     config(['scout.driver' => 'algolia']);
+    public function a_user_can_search_threads()
+    {
+        $this->markTestSkipped();
 
-    //     $search = 'foobar';
+        config(['scout.driver' => 'algolia']);
 
-    //     create('App\Thread', [], 2);
+        $search = 'foobar';
 
-    //     create('App\Thread', ['body' => "Body with the {$search} term."], 2);
+        create('App\Thread', [], 2);
 
-    //     do {
-    //         sleep(.25);
+        create('App\Thread', ['body' => "Body with the {$search} term."], 2);
 
-    //         $results = $this->getJson("/threads/search?q={$search}")->json()['data'];
-    //     } while (empty($results));
+        do {
+            sleep(.25);
 
-    //     $this->assertCount(2, $results);
+            $results = $this->getJson("/threads/search?q={$search}")->json()['data'];
+        } while (empty($results));
 
-    //     Thread::latest()->take(4)->unsearchable();
-    // }
+        $this->assertCount(2, $results);
+
+        Thread::latest()->take(4)->unsearchable();
+    }
 }
