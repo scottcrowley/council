@@ -22,6 +22,7 @@ class ChannelsController extends Controller
     {
         $data = request()->validate([
             'name' => 'required|unique:channels',
+            'slug' => 'required',
             'description' => 'required',
         ]);
 

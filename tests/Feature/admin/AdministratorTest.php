@@ -14,6 +14,7 @@ class AdministratorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->withExceptionHandling();
     }
 
@@ -33,6 +34,7 @@ class AdministratorTest extends TestCase
     public function a_non_administrator_cannot_access_the_administration_section()
     {
         $regularUser = factory(User::class)->create();
+
         $this->actingAs($regularUser)
              ->get('/admin')
              ->assertStatus(Response::HTTP_FORBIDDEN);

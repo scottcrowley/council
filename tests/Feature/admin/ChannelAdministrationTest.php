@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Channel;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +14,6 @@ class ChannelAdministrationTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->withExceptionHandling();
     }
 
     /** @test */
@@ -62,11 +60,11 @@ class ChannelAdministrationTest extends TestCase
     }
 
     /** @test */
-    // public function a_channel_requires_a_slug()
-    // {
-    //     $this->createChannel(['slug' => null])
-    //          ->assertSessionHasErrors('slug');
-    // }
+    public function a_channel_requires_a_slug()
+    {
+        $this->createChannel(['slug' => null])
+             ->assertSessionHasErrors('slug');
+    }
 
     /** @test */
     public function a_channel_requires_a_description()
@@ -77,11 +75,11 @@ class ChannelAdministrationTest extends TestCase
 
     protected function createChannel($overrides = [])
     {
-        $administrator = factory('App\User')->create();
+        $administrator = create('App\User');
         config(['council.administrators' => [$administrator->email]]);
         $this->signIn($administrator);
 
-        $channel = make(Channel::class, $overrides);
-        return $this->post('/admin/channels', $channel->toArray());
+        $channel = make('App\Channel', $overrides);
+        return $this->post(route('admin.channels.store'), $channel->toArray());
     }
 }
