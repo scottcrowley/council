@@ -20,7 +20,6 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="/css/vendor/jquery.atwho.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.12.1/trix.css" rel="stylesheet">
     
 
     <!-- Scripts -->
