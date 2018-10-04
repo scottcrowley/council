@@ -16,10 +16,23 @@ class Reply extends Model
      */
     protected $guarded = [];
 
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
     protected $with = ['owner', 'favorites'];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
     protected $appends = ['favoritesCount', 'isFavorited', 'isBest'];
 
+    /**
+     * Boot the reply instance.
+     */
     protected static function boot()
     {
         parent::boot();
@@ -59,7 +72,7 @@ class Reply extends Model
     }
 
     /**
-     * determine if a reply was just published
+     * determine if a reply was just published a moment ago
      *
      * @return bool
      */
@@ -68,6 +81,11 @@ class Reply extends Model
         return $this->created_at->gt(Carbon::now()->subMinute());
     }
 
+    /**
+     * Fetch all mentioned users within the reply's body.
+     *
+     * @return array
+     */
     public function mentionedUsers()
     {
         preg_match_all('/@([\w\-]+)/', $this->body, $matches);
@@ -85,23 +103,45 @@ class Reply extends Model
         return $this->thread->path() . '#reply-' . $this->id;
     }
 
+    /**
+     * Access the body attribute.
+     *
+     * @param  string $body
+     * @return string
+     */
+    public function getBodyAttribute($body)
+    {
+        return \Purify::clean($body);
+    }
+
+    /**
+     * Set the body attribute.
+     *
+     * @param string $body
+     */
     public function setBodyAttribute($body)
     {
         $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profiles/$1">$0</a>', $body);
     }
 
+    /**
+     * Determine if the current reply is marked as the best.
+     *
+     * @return bool
+     */
     public function isBest()
     {
         return $this->thread->best_reply_id == $this->id;
     }
 
+    /**
+     *
+     * Determine if the current reply is marked as the best.
+     *
+     * @return bool
+     */
     public function getIsBestAttribute()
     {
         return $this->isBest();
-    }
-
-    public function getBodyAttribute($body)
-    {
-        return \Purify::clean($body);
     }
 }
