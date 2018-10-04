@@ -19,7 +19,7 @@ class ReputationTest extends TestCase
     }
 
     /** @test */
-    public function a_user_loses_points_when_they_delete_a_thread()
+    public function a_user_lose_points_when_they_delete_a_thread()
     {
         $this->signIn();
 
@@ -39,7 +39,7 @@ class ReputationTest extends TestCase
 
         $reply = $thread->addReply([
             'user_id' => create('App\User')->id,
-            'body' => 'here is a reply.'
+            'body' => 'Here is a reply.'
         ]);
 
         $this->assertEquals(Reputation::REPLY_POSTED, $reply->owner->reputation);
@@ -64,81 +64,105 @@ class ReputationTest extends TestCase
     {
         $thread = create('App\Thread');
 
-        $reply = $thread->addReply([
+        $thread->markBestReply($reply = $thread->addReply([
             'user_id' => create('App\User')->id,
-            'body' => 'here is a reply.'
-        ]);
+            'body' => 'Here is a reply.'
+        ]));
 
-        $thread->markBestReply($reply);
-
-        $this->assertEquals(Reputation::REPLY_POSTED + Reputation::BEST_REPLY_AWARDED, $reply->owner->reputation);
+        $total = Reputation::REPLY_POSTED + Reputation::BEST_REPLY_AWARDED;
+        $this->assertEquals($total, $reply->owner->reputation);
     }
 
     /** @test */
     public function when_a_thread_owner_changes_their_preferred_best_reply_the_points_should_be_transferred()
     {
-        // Given we have a current best reply...
+        // Given a thread exists.
         $thread = create('App\Thread');
-        $thread->markBestReply($firstReply = $thread->addReply([
-            'user_id' => create('App\User')->id,
+
+        // And we have a user, Jane.
+        $jane = create('App\User');
+
+        // If the owner of the thread marks Jane's reply as best...
+        $thread->markBestReply($thread->addReply([
+            'user_id' => $jane->id,
             'body' => 'Here is a reply.'
         ]));
-        // The owner of the first reply should now receive the proper reputation...
-        $total = Reputation::REPLY_POSTED + Reputation::BEST_REPLY_AWARDED;
-        $this->assertEquals($total, $firstReply->owner->reputation);
-        // But, if the owner of the thread decides to choose a different best reply...
-        $thread->markBestReply($secondReply = $thread->addReply([
-            'user_id' => create('App\User')->id,
+
+        // Then Jane should receive the appropriate reputation points.
+        $this->assertEquals(Reputation::REPLY_POSTED + Reputation::BEST_REPLY_AWARDED, $jane->fresh()->reputation);
+
+        // But, if the owner of the thread decides to choose a different best reply, written by John.
+        $john = create('App\User');
+
+        $thread->markBestReply($thread->addReply([
+            'user_id' => $john->id,
             'body' => 'Here is a better reply.'
         ]));
-        // Then the original recipient of the best reply reputation should be stripped of those points.
-        $total = Reputation::REPLY_POSTED + Reputation::BEST_REPLY_AWARDED - Reputation::BEST_REPLY_AWARDED;
-        $this->assertEquals($total, $firstReply->owner->fresh()->reputation);
+
+        // Then, Jane's reputation should be stripped of those "best reply" points.
+        $this->assertEquals(Reputation::REPLY_POSTED, $jane->fresh()->reputation);
+
         // And those points should now be reflected on the account of the new best reply owner.
         $total = Reputation::REPLY_POSTED + Reputation::BEST_REPLY_AWARDED;
-        $this->assertEquals($total, $secondReply->owner->reputation);
+        $this->assertEquals($total, $john->fresh()->reputation);
     }
 
     /** @test */
     public function a_user_gains_points_when_their_reply_is_favorited()
     {
-        $this->signIn();
+        // Given we have a signed in user, John.
+        $this->signIn($john = create('App\User'));
 
-        $thread = create('App\Thread');
+        // And also Jane...
+        $jane = create('App\User');
 
-        $reply = $thread->addReply([
-            'user_id' => create('App\User')->id,
+        // If Jane adds a new reply to a thread...
+        $reply = create('App\Thread')->addReply([
+            'user_id' => $jane->id,
             'body' => 'Some reply'
         ]);
 
-        $this->post(route('replies.favorite', $reply->id));
+        // And John favorites that reply.
+        $this->post(route('replies.favorite', $reply));
 
-        $total = Reputation::REPLY_POSTED + Reputation::REPLY_FAVORITED;
+        // Then, Jane's reputation should grow, accordingly.
+        $this->assertEquals(
+            Reputation::REPLY_POSTED + Reputation::REPLY_FAVORITED,
+            $jane->fresh()->reputation
+        );
 
-        $this->assertEquals($total, $reply->owner->fresh()->reputation);
-
-        $this->assertEquals(0, auth()->user()->reputation);
+        // While John's should remain unaffected.
+        $this->assertEquals(0, $john->reputation);
     }
 
     /** @test */
     public function a_user_loses_points_when_their_favorited_reply_is_unfavorited()
     {
-        $reply = create('App\Reply', ['user_id' => create('App\User')]);
+        // Given we have a signed in user, John.
+        $this->signIn($john = create('App\User'));
 
-        $this->signIn();
+        // And also Jane...
+        $jane = create('App\User');
 
-        $this->post(route('replies.favorite', $reply->id));
+        // If Jane adds a new reply to a thread...
+        $reply = create('App\Reply', ['user_id' => $jane]);
 
-        $total = Reputation::REPLY_POSTED + Reputation::REPLY_FAVORITED;
+        // And John favorites that reply.
+        $this->post(route('replies.favorite', $reply));
 
-        $this->assertEquals($total, $reply->owner->fresh()->reputation);
+        // Then, Jane's reputation should grow, accordingly.
+        $this->assertEquals(
+            Reputation::REPLY_POSTED + Reputation::REPLY_FAVORITED,
+            $jane->fresh()->reputation
+        );
 
-        $this->delete(route('replies.unfavorite', $reply->id));
+        // But, if John then unfavorites that reply...
+        $this->delete(route('replies.unfavorite', $reply));
 
-        $total = Reputation::REPLY_POSTED + Reputation::REPLY_FAVORITED - Reputation::REPLY_FAVORITED;
+        // Then, Jane's reputation should be reduced, accordingly.
+        $this->assertEquals(Reputation::REPLY_POSTED, $jane->fresh()->reputation);
 
-        $this->assertEquals($total, $reply->owner->fresh()->reputation);
-
-        $this->assertEquals(0, auth()->user()->reputation);
+        // While John's should remain unaffected.
+        $this->assertEquals(0, $john->reputation);
     }
 }
