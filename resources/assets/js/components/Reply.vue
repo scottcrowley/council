@@ -20,7 +20,7 @@
                         <wysiwyg v-model="body"></wysiwyg>
                     </div>
                     <button class="btn btn-sm btn-outline-primary">Update</button>
-                    <button class="btn btn-sm btn-link" @click="editing = false" type="button">Cancel</button>
+                    <button class="btn btn-sm btn-link" @click="cancel" type="button">Cancel</button>
                 </form>
             </div>
             <div v-else v-html="body" :class="isBest ? 'text-success' : ''"></div>
@@ -81,6 +81,12 @@
                 this.editing = false;
 
                 flash('Updated!');
+            },
+
+            cancel() {
+                this.editing = false;
+                
+                this.body = this.reply.body;
             },
 
             destroy() {
