@@ -45,7 +45,7 @@ class InstallCommand extends Command
             $this->line('~ Database successfully migrated.');
         }
 
-        // $this->call('cache:clear');
+        $this->call('cache:clear');
 
         $this->goodbye();
     }
