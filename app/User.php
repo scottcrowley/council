@@ -2,8 +2,9 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar_path', 'confirmation_token'
+        'name',
+        'email',
+        'password',
+        'avatar_path',
+        'confirmation_token'
     ];
 
     /**
@@ -33,7 +38,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'email'
+        'password',
+        'remember_token',
+        'email'
     ];
 
     /**
@@ -46,7 +53,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the route key name for Laravel
+     * Get the route key name for Laravel.
      *
      * @return string
      */
@@ -108,10 +115,10 @@ class User extends Authenticatable
     }
 
     /**
-    * Determine if the user is an administrator.
-    *
-    * @return bool
-    */
+     * Determine if the user is an administrator.
+     *
+     * @return bool
+     */
     public function getIsAdminAttribute()
     {
         return $this->isAdmin();
@@ -126,7 +133,7 @@ class User extends Authenticatable
     {
         cache()->forever(
             $this->visitedThreadCacheKey($thread),
-            \Carbon\Carbon::now()
+            Carbon::now()
         );
     }
 

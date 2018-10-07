@@ -19,7 +19,7 @@ class LockThreadsTest extends TestCase
 
         $this->post(route('locked-threads.store', $thread))->assertStatus(403);
 
-        $this->assertFalse(!!$thread->fresh()->locked);
+        $this->assertFalse($thread->fresh()->locked);
     }
 
     /** @test */
@@ -31,7 +31,7 @@ class LockThreadsTest extends TestCase
 
         $this->post(route('locked-threads.store', $thread));
 
-        $this->assertTrue($thread->fresh()->locked);
+        $this->assertTrue($thread->fresh()->locked, 'Failed asserting that the thread was locked.');
     }
 
     /** @test */
@@ -43,7 +43,7 @@ class LockThreadsTest extends TestCase
 
         $this->delete(route('locked-threads.destroy', $thread));
 
-        $this->assertFalse(!!$thread->fresh()->locked);
+        $this->assertFalse($thread->fresh()->locked, 'Failed asserting that the thread was unlocked.');
     }
 
     /** @test */
@@ -55,7 +55,7 @@ class LockThreadsTest extends TestCase
 
         $this->post($thread->path() . '/replies', [
             'body' => 'Foobar',
-            'user_id' => create('App\User')->id
+            'user_id' => auth()->id()
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

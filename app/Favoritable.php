@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 trait Favoritable
 {
+    /**
+     * Boot the trait.
+     */
     protected static function bootFavoritable()
     {
         static::deleting(function ($model) {
@@ -14,7 +17,7 @@ trait Favoritable
     }
 
     /**
-     * MorphMany Relationship
+     * A reply can be favorited.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -24,7 +27,7 @@ trait Favoritable
     }
 
     /**
-     * favorite the current request
+     * Favorite the current reply.
      *
      * @return Model
      */
@@ -37,6 +40,9 @@ trait Favoritable
         }
     }
 
+    /**
+     * Unfavorite the current reply.
+     */
     public function unfavorite()
     {
         $attributes = ['user_id' => auth()->id()];
@@ -45,7 +51,7 @@ trait Favoritable
     }
 
     /**
-     * is the current request favorited by the authenticated user
+     * Determine if the current reply has been favorited.
      *
      * @return bool
      */
@@ -55,9 +61,9 @@ trait Favoritable
     }
 
     /**
-     * gets the favorite count for the request as an attribute
+     * Fetch the favorited status as a property.
      *
-     * @return integer
+     * @return bool
      */
     public function getIsFavoritedAttribute()
     {
@@ -65,7 +71,7 @@ trait Favoritable
     }
 
     /**
-     * gets the favorite count for the request as an attribute
+     * Get the number of favorites for the reply.
      *
      * @return integer
      */

@@ -7,6 +7,12 @@ use App\Trending;
 
 class SearchController extends Controller
 {
+    /**
+     * Show the search results.
+     *
+     * @param  \App\Trending $trending
+     * @return mixed
+     */
     public function show(Trending $trending)
     {
         if (request()->expectsJson()) {

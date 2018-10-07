@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Thread;
-use Illuminate\Http\Request;
-use App\Reply;
 use App\Http\Requests\CreatePostRequest;
+use App\Reply;
+use App\Thread;
 
 class RepliesController extends Controller
 {
     /**
-     * __construct
-     *
-     * @return void
+     * Create a new RepliesController instance.
      */
     public function __construct()
     {
@@ -20,10 +17,10 @@ class RepliesController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Fetch all relevant replies.
      *
-     * @param
-     * @return \Illuminate\Http\Response
+     * @param int $channelId
+     * @param Thread $thread
      */
     public function index($channelId, Thread $thread)
     {
@@ -31,12 +28,12 @@ class RepliesController extends Controller
     }
 
     /**
-     * Store the specified resource in storage.
+     * Persist a new reply.
      *
-     * @param mixed $channelId
-     * @param Thread $thread
-     * @param CreatePostRequest $form
-     * @return void
+     * @param  integer           $channelId
+     * @param  Thread            $thread
+     * @param  CreatePostRequest $form
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function store($channelId, Thread $thread, CreatePostRequest $form)
     {
@@ -51,25 +48,22 @@ class RepliesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an existing reply.
      *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
+     * @param Reply $reply
      */
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
 
-        request()->validate(['body' => 'required|spamfree']);
-
-        $reply->update(request(['body']));
+        $reply->update(request()->validate(['body' => 'required|spamfree']));
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the given reply.
      *
-     * @param  \App\Reply  $reply
-     * @return back
+     * @param  Reply $reply
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Reply $reply)
     {

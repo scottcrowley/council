@@ -6,13 +6,18 @@ use App\User;
 
 class ThreadFilters extends Filters
 {
+    /**
+     * Registered filters to operate upon.
+     *
+     * @var array
+     */
     protected $filters = ['by', 'popular', 'unanswered'];
 
     /**
-     * by
+     * Filter the query by a given username.
      *
-     * @param string $username
-     * @return Builder
+     * @param  string $username
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function by($username)
     {
@@ -22,21 +27,21 @@ class ThreadFilters extends Filters
     }
 
     /**
-     * Filter the query accordingly to most popular threads
+     * Filter the query according to most popular threads.
      *
-     * @return Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function popular()
     {
-        $this->builder->getQuery()->orders = []; //Clear out the any existing order statements
+        $this->builder->getQuery()->orders = [];
 
         return $this->builder->orderBy('replies_count', 'desc');
     }
 
     /**
-     * Filter the query accordingly to threads with no replies
+     * Filter the query according to those that are unanswered.
      *
-     * @return Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function unanswered()
     {

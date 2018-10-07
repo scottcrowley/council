@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Gate;
 use App\Exceptions\ThrottleException;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class CreatePostRequest extends FormRequest
 {
@@ -19,14 +19,17 @@ class CreatePostRequest extends FormRequest
     }
 
     /**
-     * Handles a failed authorization attempt
+     * Handle a failed authorization attempt.
      *
      * @return void
-     * @throws App\Exceptions\ThrottleException
+     *
+     * @throws ThrottleException
      */
     protected function failedAuthorization()
     {
-        throw new ThrottleException('You are replying too frequently. Please take a break.');
+        throw new ThrottleException(
+            'You are replying too frequently. Please take a break.'
+        );
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Reply;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ReplyPolicy
@@ -11,10 +11,10 @@ class ReplyPolicy
     use HandlesAuthorization;
 
     /**
-     * determine if an authenticated user has permissions to update a reply
+     * Determine if the authenticated user has permission to update a reply.
      *
-     * @param User $user
-     * @param Reply $reply
+     * @param  User  $user
+     * @param  Reply $reply
      * @return bool
      */
     public function update(User $user, Reply $reply)
@@ -23,16 +23,14 @@ class ReplyPolicy
     }
 
     /**
-     * determines if a user is publishing replies too frequently
+     * Determine if the authenticated user has permission to create a new reply.
      *
-     * @param User $user
+     * @param  User $user
      * @return bool
      */
     public function create(User $user)
     {
-        $lastReply = $user->fresh()->lastReply;
-
-        if (!$lastReply) {
+        if (!$lastReply = $user->fresh()->lastReply) {
             return true;
         }
 

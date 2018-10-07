@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        DB::statement('PRAGMA foreign_keys=on');
+        DB::statement('PRAGMA foreign_keys=on;');
     }
 
     protected function signIn($user = null)
@@ -28,8 +28,11 @@ abstract class TestCase extends BaseTestCase
     protected function signInAdmin($admin = null)
     {
         $admin = $admin ?: create('App\User');
+
         config(['council.administrators' => [$admin->email]]);
+
         $this->actingAs($admin);
+
         return $this;
     }
 }

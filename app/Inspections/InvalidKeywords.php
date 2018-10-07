@@ -7,7 +7,7 @@ use Exception;
 class InvalidKeywords
 {
     /**
-     * All registered invalid keywords
+     * All registered invalid keywords.
      *
      * @var array
      */
@@ -16,16 +16,16 @@ class InvalidKeywords
     ];
 
     /**
-     * detects invalid keywords
+     * Detect spam.
      *
-     * @param string $body
-     * @return void
+     * @param  string $body
+     * @throws \Exception
      */
     public function detect($body)
     {
         foreach ($this->keywords as $keyword) {
             if (stripos($body, $keyword) !== false) {
-                throw new Exception('Your reply contains spam');
+                throw new Exception('Your reply contains spam.');
             }
         }
     }

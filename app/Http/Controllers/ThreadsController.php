@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Thread;
-use Illuminate\Http\Request;
 use App\Channel;
 use App\Filters\ThreadFilters;
-use App\Trending;
 use App\Rules\Recaptcha;
+use App\Thread;
+use App\Trending;
 
 class ThreadsController extends Controller
 {
     /**
-     * create a new ThreadsController instance
-     *
-     * @return void
+     * Create a new ThreadsController instance.
      */
     public function __construct()
     {
@@ -24,9 +21,9 @@ class ThreadsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Channel $channel
-     * @param  \App\Filters\ThreadFilters  $filters
-     * @param  \App\Trending  $trending
+     * @param Channel                       $channel
+     * @param  \App\Filters\ThreadFilters   $filters
+     * @param  \App\Trending                $trending
      * @return \Illuminate\Http\Response
      */
     public function index(Channel $channel, ThreadFilters $filters, Trending $trending)
@@ -80,27 +77,15 @@ class ThreadsController extends Controller
         }
 
         return redirect($thread->path())
-            ->with('flash', 'Your thread has been published.');
-    }
-
-    public function update($channel, Thread $thread)
-    {
-        $this->authorize('update', $thread);
-
-        $thread->update(request()->validate([
-            'title' => 'required|spamfree',
-            'body' => 'required|spamfree'
-        ]));
-
-        return $thread;
+            ->with('flash', 'Your thread has been published!');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  $channel
-     * @param  \App\Thread  $thread
-     * @param  \App\Trending  $trending
+     * @param  \App\Thread      $thread
+     * @param  \App\Trending    $trending
      * @return \Illuminate\Http\Response
      */
     public function show($channel, Thread $thread, Trending $trending)
@@ -117,11 +102,29 @@ class ThreadsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update the given thread.
      *
-     * @param integer $channel
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @param string $channel
+     * @param Thread $thread
+     */
+    public function update($channel, Thread $thread)
+    {
+        $this->authorize('update', $thread);
+
+        $thread->update(request()->validate([
+            'title' => 'required|spamfree',
+            'body' => 'required|spamfree'
+        ]));
+
+        return $thread;
+    }
+
+    /**
+     * Delete the given thread.
+     *
+     * @param        $channel
+     * @param Thread $thread
+     * @return mixed
      */
     public function destroy($channel, Thread $thread)
     {
@@ -137,13 +140,13 @@ class ThreadsController extends Controller
     }
 
     /**
-     * getThreads
+     * Fetch all relevant threads.
      *
-     * @param Channel $channel
-     * @param $filters
-     * @return void
+     * @param Channel       $channel
+     * @param ThreadFilters $filters
+     * @return mixed
      */
-    protected function getThreads(Channel $channel, $filters)
+    protected function getThreads(Channel $channel, ThreadFilters $filters)
     {
         $threads = Thread::latest()->filter($filters);
 

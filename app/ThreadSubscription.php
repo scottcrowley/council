@@ -2,22 +2,22 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Notifications\ThreadWasUpdated;
+use Illuminate\Database\Eloquent\Model;
 
 class ThreadSubscription extends Model
 {
     /**
-     * don't auto apply mass assignment protection
+     * The attributes that aren't mass assignable.
      *
      * @var array
      */
     protected $guarded = [];
 
     /**
-     * a thread subscription belongs to a user
+     * Get the user associated with the subscription.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
@@ -25,9 +25,9 @@ class ThreadSubscription extends Model
     }
 
     /**
-     * a thread subscription belongs to a thread
+     * Get the thread associated with the subscription.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function thread()
     {
@@ -35,10 +35,9 @@ class ThreadSubscription extends Model
     }
 
     /**
-     * notify all subscribed users thread was updated.
+     * Notify the related user that the thread was updated.
      *
-     * @param array $reply
-     * @return void
+     * @param \App\Reply $reply
      */
     public function notify($reply)
     {

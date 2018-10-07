@@ -10,11 +10,10 @@ class Reputation
     const REPLY_FAVORITED = 5;
 
     /**
-     * Award reputation points to the given user
+     * Award reputation points to the given user.
      *
      * @param User $user
      * @param integer $points
-     * @return void
      */
     public static function gain($user, $points)
     {
@@ -22,11 +21,10 @@ class Reputation
     }
 
     /**
-     * Reduce reputation points for the given user
+     * Reduce reputation points for the given user.
      *
      * @param User $user
      * @param integer $points
-     * @return void
      */
     public static function lose($user, $points)
     {

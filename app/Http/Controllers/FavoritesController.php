@@ -8,9 +8,7 @@ use App\Reputation;
 class FavoritesController extends Controller
 {
     /**
-     * create a new controller instance
-     *
-     * @return void
+     * Create a new controller instance.
      */
     public function __construct()
     {
@@ -18,10 +16,9 @@ class FavoritesController extends Controller
     }
 
     /**
-     * store a new favorite in the database
+     * Store a new favorite in the database.
      *
-     * @param Reply $reply
-     * @return void
+     * @param  Reply $reply
      */
     public function store(Reply $reply)
     {
@@ -31,10 +28,9 @@ class FavoritesController extends Controller
     }
 
     /**
-     * delete the favorite from the database
+     * Delete the favorite.
      *
      * @param Reply $reply
-     * @return void
      */
     public function destroy(Reply $reply)
     {

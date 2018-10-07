@@ -7,11 +7,10 @@ use App\Thread;
 class ThreadSubscriptionsController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Store a new thread subscription.
      *
-     * @param  integer $channelId
+     * @param int    $channelId
      * @param Thread $thread
-     * @return \Illuminate\Http\Response
      */
     public function store($channelId, Thread $thread)
     {
@@ -19,11 +18,10 @@ class ThreadSubscriptionsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete an existing thread subscription.
      *
-     * @param  string $channelId
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @param int    $channelId
+     * @param Thread $thread
      */
     public function destroy($channelId, Thread $thread)
     {

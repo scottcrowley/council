@@ -5,7 +5,7 @@ namespace App\Inspections;
 class Spam
 {
     /**
-     * All registered inspections
+     * All registered inspections.
      *
      * @var array
      */
@@ -14,10 +14,10 @@ class Spam
     ];
 
     /**
-     * detects spam
+     * Detect spam.
      *
-     * @param string $body
-     * @return void
+     * @param  string $body
+     * @return bool
      */
     public function detect($body)
     {

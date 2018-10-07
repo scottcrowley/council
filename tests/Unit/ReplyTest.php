@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Reply;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,7 +35,7 @@ class ReplyTest extends TestCase
     /** @test */
     public function it_can_detect_all_mention_users_in_the_body()
     {
-        $reply = new \App\Reply([
+        $reply = new Reply([
             'body' => '@JaneDoe wants to speak to @JohnDoe.'
         ]);
 
@@ -44,7 +45,7 @@ class ReplyTest extends TestCase
     /** @test */
     public function it_wraps_mentioned_usernames_in_the_body_within_anchor_tags()
     {
-        $reply = new \App\Reply([
+        $reply = new Reply([
             'body' => 'Hello @JaneDoe.'
         ]);
 

@@ -14,7 +14,7 @@ class Thread extends Model
     use RecordsActivity, Searchable;
 
     /**
-     * don't auto apply mass assignment protection
+     * Don't auto-apply mass assignment protection.
      *
      * @var array
      */
@@ -66,7 +66,7 @@ class Thread extends Model
     }
 
     /**
-     * the path of the current thread
+     * Get a string path for the thread.
      *
      * @return string
      */
@@ -76,9 +76,9 @@ class Thread extends Model
     }
 
     /**
-     * a thread has a creator
+     * A thread belongs to a creator.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function creator()
     {
@@ -86,9 +86,9 @@ class Thread extends Model
     }
 
     /**
-     * a thread belongs to a channel
+     * A thread is assigned a channel.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function channel()
     {
@@ -96,7 +96,7 @@ class Thread extends Model
     }
 
     /**
-     * a thread has many replies
+     * A thread may have many replies.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -116,10 +116,10 @@ class Thread extends Model
     }
 
     /**
-     * add a reply to the thread
+     * Add a reply to the thread.
      *
-     * @param array $reply
-     * @return Reply
+     * @param  array $reply
+     * @return Model
      */
     public function addReply($reply)
     {
@@ -138,14 +138,17 @@ class Thread extends Model
     public function notifyMentionedUsers()
     {
         preg_match_all('/@([\w\-]+)/', $this->body, $matches);
+
         if (isset($matches[1])) {
             User::whereIn('name', $matches[1])
                 ->get()
                 ->each(function ($user) {
                     $user->notify(new YouWereMentioned($this));
                 });
+
             return true;
         }
+
         return false;
     }
 
@@ -156,15 +159,15 @@ class Thread extends Model
      * @param  ThreadFilters $filters
      * @return Builder
      */
-    public function scopeFilter($query, $filters)
+    public function scopeFilter($query, ThreadFilters $filters)
     {
         return $filters->apply($query);
     }
 
     /**
-     * subscribe a user to the current thread
+     * Subscribe a user to the current thread.
      *
-     * @param integer[null] $userId
+     * @param  int|null $userId
      * @return $this
      */
     public function subscribe($userId = null)
@@ -177,10 +180,9 @@ class Thread extends Model
     }
 
     /**
-     * unsubscribe a user from the current thread
+     * Unsubscribe a user from the current thread.
      *
-     * @param integer[null] $userId
-     * @return void
+     * @param int|null $userId
      */
     public function unsubscribe($userId = null)
     {
@@ -190,9 +192,9 @@ class Thread extends Model
     }
 
     /**
-     * a thread hasMany subscriptions
+     * A thread can have many subscriptions.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function subscriptions()
     {
@@ -250,10 +252,9 @@ class Thread extends Model
     }
 
     /**
-     * sets the proper slug attribute
+     * Set the proper slug attribute.
      *
      * @param string $value
-     * @return void
      */
     public function setSlugAttribute($value)
     {

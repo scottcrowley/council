@@ -2,15 +2,15 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
     use Favoritable, RecordsActivity;
 
     /**
-     * don't auto apply mass assignment protection
+     * Don't auto-apply mass assignment protection.
      *
      * @var array
      */
@@ -39,9 +39,8 @@ class Reply extends Model
 
         static::created(function ($reply) {
             $reply->thread->increment('replies_count');
-            if ($reply->owner) {
-                Reputation::gain($reply->owner, Reputation::REPLY_POSTED);
-            }
+
+            Reputation::gain($reply->owner, Reputation::REPLY_POSTED);
         });
 
         static::deleted(function ($reply) {
@@ -52,7 +51,7 @@ class Reply extends Model
     }
 
     /**
-     * a reply has an owner
+     * A reply has an owner.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -62,9 +61,9 @@ class Reply extends Model
     }
 
     /**
-     * a reply belongs to a thread
+     * A reply belongs to a thread.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function thread()
     {
@@ -72,7 +71,7 @@ class Reply extends Model
     }
 
     /**
-     * determine if a reply was just published a moment ago
+     * Determine if the reply was just published a moment ago.
      *
      * @return bool
      */
@@ -94,13 +93,13 @@ class Reply extends Model
     }
 
     /**
-     * the path of the related thread
+     * Determine the path to the reply.
      *
      * @return string
      */
     public function path()
     {
-        return $this->thread->path() . '#reply-' . $this->id;
+        return $this->thread->path() . "#reply-{$this->id}";
     }
 
     /**
@@ -121,7 +120,11 @@ class Reply extends Model
      */
     public function setBodyAttribute($body)
     {
-        $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profiles/$1">$0</a>', $body);
+        $this->attributes['body'] = preg_replace(
+            '/@([\w\-]+)/',
+            '<a href="/profiles/$1">$0</a>',
+            $body
+        );
     }
 
     /**

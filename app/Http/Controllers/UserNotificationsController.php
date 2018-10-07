@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-
 class UserNotificationsController extends Controller
 {
     /**
-    * UserNotificationsController constructor
-    */
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
     /**
-     * Display a listing of the resource.
+     * Fetch all unread notifications for the user.
      *
-     * @return void
+     * @return mixed
      */
     public function index()
     {
@@ -25,13 +23,12 @@ class UserNotificationsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Mark a specific notification as read.
      *
-     * @param  User $user
-     * @param integer $notificationId
-     * @return \Illuminate\Http\Response
+     * @param \App\User $user
+     * @param int       $notificationId
      */
-    public function destroy(User $user, $notificationId)
+    public function destroy($user, $notificationId)
     {
         auth()->user()->notifications()->findOrFail($notificationId)->markAsRead();
     }

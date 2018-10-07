@@ -13,11 +13,14 @@ use Faker\Generator as Faker;
 |
 */
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\User::class, function (Faker $faker) {
+    static $password;
+
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'confirmed' => true
     ];
@@ -30,7 +33,7 @@ $factory->state(App\User::class, 'unconfirmed', function () {
 });
 
 $factory->define(App\Thread::class, function (Faker $faker) {
-    $title = $faker->sentence();
+    $title = $faker->sentence;
 
     return [
         'user_id' => function () {
@@ -71,7 +74,7 @@ $factory->define(\Illuminate\Notifications\DatabaseNotification::class, function
         'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
         'type' => 'App\Notifications\ThreadWasUpdated',
         'notifiable_id' => function () {
-            return auth()->user()->id ?: factory('App\User')->create()->id;
+            return auth()->id() ?: factory('App\User')->create()->id;
         },
         'notifiable_type' => 'App\User',
         'data' => ['foo' => 'bar']

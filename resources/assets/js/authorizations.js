@@ -8,5 +8,4 @@ module.exports = {
     isAdmin () {
         return user.isAdmin;
     }
-
-}
+};

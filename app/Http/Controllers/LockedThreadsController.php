@@ -7,10 +7,9 @@ use App\Thread;
 class LockedThreadsController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Lock the given thread.
      *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @param \App\Thread $thread
      */
     public function store(Thread $thread)
     {
@@ -18,10 +17,9 @@ class LockedThreadsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Unlock the given thread.
      *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
+     * @param \App\Thread $thread
      */
     public function destroy(Thread $thread)
     {

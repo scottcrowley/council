@@ -105,7 +105,7 @@ class CreateThreadsTest extends TestCase
 
         $thread = create('App\Thread', ['title' => 'Foo Title']);
 
-        $this->assertEquals($thread->fresh()->slug, 'foo-title');
+        $this->assertEquals($thread->slug, 'foo-title');
 
         $thread = $this->postJson(route('threads'), $thread->toArray() + ['g-recaptcha-response' => 'token'])->json();
 
@@ -154,7 +154,7 @@ class CreateThreadsTest extends TestCase
         $this->assertEquals(0, Activity::count());
     }
 
-    public function publishThread($overrides = [])
+    protected function publishThread($overrides = [])
     {
         $this->signIn();
 

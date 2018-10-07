@@ -5,9 +5,7 @@ namespace App;
 trait RecordsActivity
 {
     /**
-     * dynamic boot method to catch model events
-     *
-     * @return void
+     * Boot the trait.
      */
     protected static function bootRecordsActivity()
     {
@@ -26,16 +24,20 @@ trait RecordsActivity
         });
     }
 
+    /**
+     * Fetch all model events that require activity recording.
+     *
+     * @return array
+     */
     protected static function getActivitiesToRecord()
     {
         return ['created'];
     }
 
     /**
-     * record an event for a request
+     * Record new activity for the model.
      *
      * @param string $event
-     * @return void
      */
     protected function recordActivity($event)
     {
@@ -46,7 +48,7 @@ trait RecordsActivity
     }
 
     /**
-     * MorphMany Relationship
+     * Fetch the activity relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -56,14 +58,15 @@ trait RecordsActivity
     }
 
     /**
-     * dynamically generate the activity type name
+     * Determine the activity type.
      *
-     * @param string $event
+     * @param  string $event
      * @return string
      */
     protected function getActivityType($event)
     {
         $type = strtolower((new \ReflectionClass($this))->getShortName());
+
         return "{$event}_{$type}";
     }
 }
