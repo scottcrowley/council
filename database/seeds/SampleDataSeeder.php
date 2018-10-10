@@ -2,8 +2,8 @@
 
 use App\Reply;
 use App\Thread;
-use App\Activity;
 use App\Channel;
+use App\Activity;
 use App\Favorite;
 use App\ThreadSubscription;
 use Illuminate\Database\Seeder;

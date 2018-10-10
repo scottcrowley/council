@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Activity extends Model
 {
     /**
-     * don't auto apply mass assignment protection
+     * don't auto apply mass assignment protection.
      *
      * @var array
      */
     protected $guarded = [];
 
     /**
-     * finds out the related subject for an activity
+     * finds out the related subject for an activity.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */

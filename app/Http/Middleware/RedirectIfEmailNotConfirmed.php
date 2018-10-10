@@ -17,7 +17,7 @@ class RedirectIfEmailNotConfirmed
     {
         $user = $request->user();
 
-        if (!$user->confirmed && !$user->isAdmin()) {
+        if (! $user->confirmed && ! $user->isAdmin()) {
             $message = 'You must first confirm your email address.';
             if ($request->expectsJson()) {
                 return response($message, 401);

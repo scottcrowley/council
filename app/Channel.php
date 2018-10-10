@@ -14,7 +14,7 @@ class Channel extends Model
     protected $guarded = [];
 
     /**
-     * Get the route key name for Laravel
+     * Get the route key name for Laravel.
      *
      * @return string
      */
@@ -24,7 +24,7 @@ class Channel extends Model
     }
 
     /**
-     * a channel has many threads
+     * a channel has many threads.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
