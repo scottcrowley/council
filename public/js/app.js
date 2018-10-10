@@ -89375,7 +89375,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     mounted: function mounted() {
-        $('#body').atwho({
+        $('#app').atwho({
             at: "@",
             delay: 750,
             callbacks: {
@@ -89393,9 +89393,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         addReply: function addReply() {
             var _this = this;
 
-            axios.post(location.pathname + '/replies', { body: this.body }).catch(function (error) {
-                flash(error.response.data, 'danger');
-            }).then(function (_ref) {
+            axios.post(location.pathname + '/replies', { body: this.body }).then(function (_ref) {
                 var data = _ref.data;
 
                 _this.body = '';
@@ -89403,6 +89401,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 flash('Your reply has been posted');
 
                 _this.$emit('created', data);
+            }).catch(function (error) {
+                flash(error.response.data, 'danger');
             });
         }
     }

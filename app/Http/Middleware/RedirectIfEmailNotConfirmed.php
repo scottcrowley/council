@@ -18,8 +18,13 @@ class RedirectIfEmailNotConfirmed
         $user = $request->user();
 
         if (!$user->confirmed && !$user->isAdmin()) {
+            $message = 'You must first confirm your email address.';
+            if ($request->expectsJson()) {
+                return response($message, 401);
+            }
+
             return redirect('/threads')
-                ->with('flash', 'You must first confirm your email address.');
+                ->with('flash', $message);
         }
 
         return $next($request);

@@ -32,6 +32,20 @@ class ParticipateInThreadsTest extends TestCase
     }
 
     /** @test */
+    public function new_users_must_first_confirm_their_email_address_before_replying_to_a_thread()
+    {
+        $user = factory('App\User')->states('unconfirmed')->create();
+
+        $this->signIn($user);
+
+        $thread = create('App\Thread');
+        $reply = make('App\Reply');
+
+        $this->json('post', $thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(401);
+    }
+
+    /** @test */
     public function a_reply_requires_a_body()
     {
         $this->signIn();

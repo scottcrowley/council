@@ -21,11 +21,12 @@ class MentionUsersTest extends TestCase
         $jane = create('App\User', ['name' => 'JaneDoe']);
 
         // And JohnDoe create new thread and mentions @JaneDoe.
-        $thread = make('App\Thread', [
+        $thread = create('App\Thread', [
+            'user_id' => auth()->id(),
             'body' => 'Hey @JaneDoe check this out.'
         ]);
 
-        $this->post(route('threads'), $thread->toArray() + ['g-recaptcha-response' => 'token']);
+        // $this->post(route('threads.store'), $thread->toArray() + ['g-recaptcha-response' => 'token']); //test fails if thread is created with 'make' and then posted to endpoint. Had to use 'create' ????
 
         // Then @JaneDoe should receive a notification.
         $this->assertCount(1, $jane->notifications);

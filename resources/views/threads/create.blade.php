@@ -2,6 +2,7 @@
 
 @section('head')
     <script src='https://www.google.com/recaptcha/api.js'></script>
+    <link href="/css/vendor/jquery.atwho.css" rel="stylesheet">
 @endsection
 
 @section('content')

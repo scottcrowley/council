@@ -19,8 +19,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="/css/vendor/jquery.atwho.css" rel="stylesheet">
-    
 
     <!-- Scripts -->
     <script>
