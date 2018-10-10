@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Trending;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Redis;
-use App\Trending;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TrendingThreadsTest extends TestCase

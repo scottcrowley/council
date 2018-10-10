@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Thread;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Thread;
 
 class SearchTest extends TestCase
 {

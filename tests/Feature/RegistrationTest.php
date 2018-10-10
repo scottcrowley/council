@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PleaseConfirmYourEmail;
-use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RegistrationTest extends TestCase
