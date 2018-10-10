@@ -5,8 +5,8 @@ namespace App;
 use Laravel\Scout\Searchable;
 use App\Filters\ThreadFilters;
 use App\Events\ThreadReceivedNewReply;
-use Illuminate\Database\Eloquent\Model;
 use App\Notifications\YouWereMentioned;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Thread extends Model
@@ -204,7 +204,7 @@ class Thread extends Model
     /**
      * Determine if the current user is subscribed to the thread.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsSubscribedToAttribute()
     {
@@ -221,7 +221,7 @@ class Thread extends Model
      */
     public function hasUpdatesFor($user)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -288,7 +288,7 @@ class Thread extends Model
      */
     public function hasBestReply()
     {
-        return !is_null($this->best_reply_id);
+        return ! is_null($this->best_reply_id);
     }
 
     /**
