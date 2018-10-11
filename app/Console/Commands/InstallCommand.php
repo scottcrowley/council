@@ -94,6 +94,7 @@ class InstallCommand extends Command
     {
         return [
             'DB_DATABASE' => $this->ask('Database name'),
+            'DB_PORT' => $this->ask('Database port', 3306),
             'DB_USERNAME' => $this->ask('Database user'),
             'DB_PASSWORD' => $this->secret('Database password ("null" for no password)'),
         ];
@@ -104,7 +105,7 @@ class InstallCommand extends Command
      */
     protected function createEnvFile()
     {
-        if (! file_exists('.env')) {
+        if (!file_exists('.env')) {
             copy('.env.example', '.env');
 
             $this->line('.env file successfully created');
