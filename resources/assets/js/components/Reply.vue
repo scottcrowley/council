@@ -23,7 +23,9 @@
                     <button class="btn btn-sm btn-link" @click="cancel" type="button">Cancel</button>
                 </form>
             </div>
-            <div v-else v-html="body" :class="isBest ? 'text-success' : ''"></div>
+            <div ref="body" v-else :class="isBest ? 'text-success' : ''">
+                <highlight :content="body"></highlight>
+            </div>
         </div>
 
         <div class="card-footer level" v-if="authorize('owns', reply) || authorize('owns', reply.thread)">
@@ -40,12 +42,13 @@
 
 <script>
     import Favorite from './Favorite.vue';
+    import Highlight from './Highlight.vue';
     import moment from 'moment';
 
     export default {
         props: ['reply'],
 
-        components: { Favorite },
+        components: { Favorite, Highlight },
 
         data() {
             return {
