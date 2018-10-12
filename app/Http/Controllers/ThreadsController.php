@@ -148,7 +148,7 @@ class ThreadsController extends Controller
      */
     protected function getThreads(Channel $channel, ThreadFilters $filters)
     {
-        $threads = Thread::orderBy('pinned', 'DESC')
+        $threads = Thread::latest('pinned')
             ->latest()
             ->with('channel')
             ->filter($filters);
