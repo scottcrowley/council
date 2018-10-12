@@ -22,7 +22,9 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="body">{!! $thread->body !!}</div>
+            <thread-view :thread="{{ $thread }}" inline-template>
+                <highlight :content="body"></highlight>
+            </thread-view>
         </div>
         <div class="card-footer">
             <div class="level">
