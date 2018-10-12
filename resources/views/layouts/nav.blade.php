@@ -54,7 +54,11 @@
                     <user-notifications></user-notifications>
 
                     @if (Auth::user()->isAdmin())
-                        <li><a href="/admin"><span class="oi oi-cog" aria-hidden="true"></span></a></li>
+                        <li class="nav-item">
+                            <a href="/admin" class="nav-link">
+                                <span class="oi oi-cog" aria-hidden="true"></span>
+                            </a>
+                        </li>
                     @endif
 
                     <li class="nav-item dropdown">
