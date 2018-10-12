@@ -25,7 +25,12 @@
             <div class="body">{!! $thread->body !!}</div>
         </div>
         <div class="card-footer">
-            {{ $thread->visits }} Visits
+            <div class="level">
+                <div class="flex">
+                    {{ $thread->visits }} Visits            
+                </div>
+                <a href="/threads/{{ $thread->channel->slug }}"><span class="label label-primary">{{ $thread->channel->name}}</span></a>            
+            </div>
         </div>
     </div>
 @empty

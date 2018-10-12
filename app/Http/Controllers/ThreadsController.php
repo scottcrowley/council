@@ -150,6 +150,7 @@ class ThreadsController extends Controller
     {
         $threads = Thread::orderBy('pinned', 'DESC')
             ->latest()
+            ->with('channel')
             ->filter($filters);
 
         if ($channel->exists) {
