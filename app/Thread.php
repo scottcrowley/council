@@ -40,7 +40,9 @@ class Thread extends Model
      * @var array
      */
     protected $casts = [
-        'locked' => 'boolean'
+        'locked' => 'boolean',
+        'locked' => 'boolean',
+        'pinned' => 'boolean'
     ];
 
     /**
@@ -221,7 +223,7 @@ class Thread extends Model
      */
     public function hasUpdatesFor($user)
     {
-        if (! auth()->check()) {
+        if (!auth()->check()) {
             return false;
         }
 
@@ -288,7 +290,7 @@ class Thread extends Model
      */
     public function hasBestReply()
     {
-        return ! is_null($this->best_reply_id);
+        return !is_null($this->best_reply_id);
     }
 
     /**
