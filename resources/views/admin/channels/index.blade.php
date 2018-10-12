@@ -9,6 +9,7 @@
                 <th>Slug</th>
                 <th>Description</th>
                 <th>Threads</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -17,7 +18,10 @@
                     <td>{{ $channel->name }}</td>
                     <td>{{ $channel->slug }}</td>
                     <td>{{ $channel->description }}</td>
-                    <td>{{ $channel->threads()->count() }}</td>
+                    <td>{{ $channel->threads()->count()}}</td>
+                    <td>
+                        <a href="{{ route('admin.channels.edit', ['channel' => $channel->slug]) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    </td>
                 </tr>
             @empty
                 <tr>
