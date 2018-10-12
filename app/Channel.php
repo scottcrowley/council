@@ -14,6 +14,15 @@ class Channel extends Model
     protected $guarded = [];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'archived' => 'boolean'
+    ];
+
+    /**
      * Get the route key name for Laravel.
      *
      * @return string
@@ -31,6 +40,11 @@ class Channel extends Model
     public function threads()
     {
         return $this->hasMany(Thread::class);
+    }
+
+    public function archive()
+    {
+        $this->update(['archived' => true]);
     }
 
     public function setNameAttribute($name)

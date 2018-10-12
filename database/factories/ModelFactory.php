@@ -51,7 +51,8 @@ $factory->define(App\Thread::class, function (Faker $faker) {
 $factory->define(App\Channel::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->word,
-        'description' => $faker->sentence
+        'description' => $faker->sentence,
+        'archived' => false
     ];
 });
 
