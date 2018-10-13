@@ -1,6 +1,6 @@
 <template>
     <div class="alert fade show alert-flash" 
-        :class="'alert-'+level" 
+        :class="classes" 
         role="alert" 
         v-show="show" 
         v-text="body"></div>
@@ -9,6 +9,7 @@
 <script>
     export default {
         props: ['message'],
+
         data() {
             return {
                 body: this.message,
@@ -16,6 +17,13 @@
                 show: false
             }
         },
+
+        computed: {
+            classes() {
+                return 'alert-' + this.level;
+            }
+        },
+
         created() {
             if (this.message) {
                 this.flash();
@@ -23,6 +31,7 @@
 
             window.events.$on('flash', data => this.flash(data));
         },
+
         methods: {
             flash(data) {
                 if (data) {
@@ -34,6 +43,7 @@
 
                 this.hide();
             },
+
             hide() {
                 setTimeout(() => {
                     this.show = false;
