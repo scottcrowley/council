@@ -108,7 +108,7 @@ class InstallCommand extends Command
      */
     protected function createEnvFile()
     {
-        if (!file_exists('.env')) {
+        if (! file_exists('.env')) {
             copy('.env.example', '.env');
 
             $this->line('.env file successfully created');
@@ -136,12 +136,12 @@ class InstallCommand extends Command
     }
 
     /**
-    * Prompt the user for optional input but hide the answer from the console.
-    *
-    * @param  string  $question
-    * @param  bool    $fallback
-    * @return string
-    */
+     * Prompt the user for optional input but hide the answer from the console.
+     *
+     * @param  string  $question
+     * @param  bool    $fallback
+     * @return string
+     */
     public function askHiddenWithDefault($question, $fallback = true)
     {
         $question = new Question($question, 'NULL');
