@@ -63,7 +63,8 @@ class ChannelAdministrationTest extends TestCase
             route('admin.channels.update', ['channel' => create('App\Channel')->slug]),
             $updatedChannel = [
                 'name' => 'altered',
-                'description' => 'altered channel description'
+                'description' => 'altered channel description',
+                'archived' => false
             ]
         );
 
