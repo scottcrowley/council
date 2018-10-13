@@ -9,7 +9,7 @@ class ChannelsController extends Controller
 {
     /**
      * Fetch all channels.
-    */
+     */
     public function index()
     {
         return cache()->rememberForever('channels', function () {
