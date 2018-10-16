@@ -22,13 +22,19 @@ class Channel extends Model
         'archived' => 'boolean'
     ];
 
+    /**
+     * Boot the channels model.
+     */
     protected static function boot()
     {
         parent::boot();
 
         static::addGlobalScope('active', function ($builder) {
-            $builder->where('archived', false)
-                ->orderBy('name', 'asc');
+            $builder->where('archived', false);
+        });
+
+        static::addGlobalScope('sorted', function ($builder) {
+            $builder->orderBy('name', 'asc');
         });
     }
 
@@ -61,5 +67,13 @@ class Channel extends Model
     {
         $this->attributes['name'] = $name;
         $this->attributes['slug'] = str_slug($name);
+    }
+
+    /**
+     * Get a new query builder that includes archives.
+     */
+    public static function withArchived()
+    {
+        return (new static)->newQueryWithoutScope('active');
     }
 }
