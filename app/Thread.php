@@ -28,13 +28,6 @@ class Thread extends Model
     protected $with = ['creator', 'channel'];
 
     /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['isSubscribedTo'];
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -223,7 +216,7 @@ class Thread extends Model
      */
     public function hasUpdatesFor($user)
     {
-        if (! auth()->check()) {
+        if (!auth()->check()) {
             return false;
         }
 
@@ -290,7 +283,7 @@ class Thread extends Model
      */
     public function hasBestReply()
     {
-        return ! is_null($this->best_reply_id);
+        return !is_null($this->best_reply_id);
     }
 
     /**
