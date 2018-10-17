@@ -4,8 +4,8 @@ namespace App;
 
 use Laravel\Scout\Searchable;
 use App\Filters\ThreadFilters;
+use App\Events\ThreadWasPublished;
 use App\Events\ThreadReceivedNewReply;
-use App\Notifications\YouWereMentioned;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -34,7 +34,6 @@ class Thread extends Model
      */
     protected $casts = [
         'locked' => 'boolean',
-        'locked' => 'boolean',
         'pinned' => 'boolean'
     ];
 
@@ -48,15 +47,15 @@ class Thread extends Model
         static::deleting(function ($thread) {
             $thread->replies->each->delete();
 
-            Reputation::lose($thread->creator, Reputation::THREAD_WAS_PUBLISHED);
+            $thread->creator->loseReputation('thread_published');
         });
 
         static::created(function ($thread) {
             $thread->update(['slug' => $thread->title]);
 
-            $thread->notifyMentionedUsers();
+            event(new ThreadWasPublished($thread));
 
-            Reputation::gain($thread->creator, Reputation::THREAD_WAS_PUBLISHED);
+            $thread->creator->gainReputation('thread_published');
         });
     }
 
@@ -78,6 +77,14 @@ class Thread extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the title for the thread.
+     */
+    public function title()
+    {
+        return $this->title;
     }
 
     /**
@@ -123,28 +130,6 @@ class Thread extends Model
         event(new ThreadReceivedNewReply($reply));
 
         return $reply;
-    }
-
-    /**
-     * Fetch all mentioned users within the thread's body.
-     *
-     * @return bool
-     */
-    public function notifyMentionedUsers()
-    {
-        preg_match_all('/@([\w\-]+)/', $this->body, $matches);
-
-        if (isset($matches[1])) {
-            User::whereIn('name', $matches[1])
-                ->get()
-                ->each(function ($user) {
-                    $user->notify(new YouWereMentioned($this));
-                });
-
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -220,10 +205,6 @@ class Thread extends Model
      */
     public function hasUpdatesFor($user)
     {
-        if (! auth()->check()) {
-            return false;
-        }
-
         $key = $user->visitedThreadCacheKey($this);
 
         return $this->updated_at > cache($key);
@@ -272,12 +253,12 @@ class Thread extends Model
     public function markBestReply(Reply $reply)
     {
         if ($this->hasBestReply()) {
-            Reputation::lose($this->bestReply->owner, Reputation::BEST_REPLY_AWARDED);
+            $this->bestReply->owner->loseReputation('best_reply_awarded');
         }
 
         $this->update(['best_reply_id' => $reply->id]);
 
-        Reputation::gain($reply->owner, Reputation::BEST_REPLY_AWARDED);
+        $reply->owner->gainReputation('best_reply_awarded');
     }
 
     /**

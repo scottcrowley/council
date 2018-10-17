@@ -64,7 +64,7 @@ class ChannelAdministrationTest extends TestCase
             $updatedChannel = [
                 'name' => 'altered',
                 'description' => 'altered channel description',
-                'archived' => false
+                'archived' => true
             ]
         );
 

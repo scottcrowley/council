@@ -9,14 +9,14 @@
                                 <span class="oi oi-pin" aria-hidden="true"></span>
                             @endif
                             
-                            @if ($thread->hasUpdatesFor(auth()->user()))
+                            @if (Auth::check() && $thread->hasUpdatesFor(auth()->user()))
                                 <strong>{{ $thread->title }}</strong>
                             @else
                                 {{ $thread->title }}
                             @endif
                         </a>
                     </h4>
-                    <h5>Posted By: <a href="{{ route('profiles', $thread->creator->name) }}">{{ $thread->creator->name }}</a></h5>
+                    <h5>Posted By: <a href="{{ route('profiles', $thread->creator) }}">{{ $thread->creator->username }}</a></h5>
                 </div>
                 <a href="{{ $thread->path() }}">{{ $thread->replies_count }} {{ str_plural('comments', $thread->replies_count) }}</a>
             </div>

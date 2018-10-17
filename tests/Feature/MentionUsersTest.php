@@ -2,46 +2,64 @@
 
 namespace Tests\Feature;
 
+use App\Thread;
 use Tests\TestCase;
+use App\Rules\Recaptcha;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MentionUsersTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        app()->singleton(Recaptcha::class, function () {
+            return \Mockery::mock(Recaptcha::class, function ($m) {
+                $m->shouldReceive('passes')->andReturn(true);
+            });
+        });
+    }
+
     /** @test */
     public function mentioned_users_in_a_thread_are_notified()
     {
         // Given we have a user, JohnDoe, who is signed in.
-        $john = create('App\User', ['name' => 'JohnDoe']);
+        $john = create('App\User', ['username' => 'JohnDoe']);
 
         $this->signIn($john);
 
         // And we also have a user, JaneDoe.
-        $jane = create('App\User', ['name' => 'JaneDoe']);
+        $jane = create('App\User', ['username' => 'JaneDoe']);
 
-        // And JohnDoe create new thread and mentions @JaneDoe.
-        $thread = create('App\Thread', [
-            'user_id' => auth()->id(),
+        // And JohnDoe create a new thread and mentions @JaneDoe.
+        $thread = make('App\Thread', [
             'body' => 'Hey @JaneDoe check this out.'
         ]);
 
-        // $this->post(route('threads.store'), $thread->toArray() + ['g-recaptcha-response' => 'token']); //test fails if thread is created with 'make' and then posted to endpoint. Had to use 'create' ????
+        $this->post(route('threads.store'), $thread->toArray() + ['g-recaptcha-response' => 'token']);
 
         // Then @JaneDoe should receive a notification.
-        $this->assertCount(1, $jane->notifications);
+        $this->assertCount(1, $jane->notifications, 'JaneDoe does not have the correct number of notifications.');
+
+        $this->assertEquals(
+            "JohnDoe mentioned you in \"{$thread->title}\"",
+            $jane->notifications->first()->data['message']
+        );
     }
 
     /** @test */
     public function mentioned_users_in_a_reply_are_notified()
     {
         // Given we have a user, JohnDoe, who is signed in.
-        $john = create('App\User', ['name' => 'JohnDoe']);
+        $john = create('App\User', ['username' => 'JohnDoe']);
 
         $this->signIn($john);
 
         // And we also have a user, JaneDoe.
-        $jane = create('App\User', ['name' => 'JaneDoe']);
+        $jane = create('App\User', ['username' => 'JaneDoe']);
 
         // If we have a thread
         $thread = create('App\Thread');
@@ -55,16 +73,21 @@ class MentionUsersTest extends TestCase
 
         // Then @JaneDoe should receive a notification.
         $this->assertCount(1, $jane->notifications);
+
+        $this->assertEquals(
+            "JohnDoe mentioned you in \"{$thread->title}\"",
+            $jane->notifications->first()->data['message']
+        );
     }
 
     /** @test */
     public function it_can_fetch_all_mentioned_users_starting_with_the_given_characters()
     {
-        create('App\User', ['name' => 'johndoe']);
-        create('App\User', ['name' => 'johndoe2']);
-        create('App\User', ['name' => 'janedoe']);
+        create('App\User', ['username' => 'johndoe']);
+        create('App\User', ['username' => 'johndoe2']);
+        create('App\User', ['username' => 'janedoe']);
 
-        $results = $this->json('GET', '/api/users', ['name' => 'john']);
+        $results = $this->json('GET', '/api/users', ['username' => 'john']);
 
         $this->assertCount(2, $results->json());
     }

@@ -52,7 +52,8 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
+            'name' => 'max:255',
+            'username' => 'required|max:255|unique:users|alpha_dash',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -68,9 +69,10 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
+            'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'confirmation_token' => str_limit(md5($data['email'].str_random()), 25, '')
+            'confirmation_token' => str_limit(md5($data['email'] . str_random()), 25, '')
         ]);
     }
 
@@ -78,13 +80,11 @@ class RegisterController extends Controller
      * The user has been registered.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
+     * @param  \App\User  $user
      * @return mixed
      */
     protected function registered(Request $request, $user)
     {
         Mail::to($user)->send(new PleaseConfirmYourEmail($user));
-
-        return redirect($this->redirectPath());
     }
 }

@@ -23,16 +23,12 @@ class YouWereMentioned extends Notification
     public function __construct($subject)
     {
         $this->subject = $subject;
-
-        $isReply = ($subject instanceof Reply);
-        $this->subject['title'] = $isReply ? $subject->thread->title : $subject->title;
-        $this->subject['owner'] = $isReply ? $subject->owner->name : $subject->creator->name;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -43,14 +39,30 @@ class YouWereMentioned extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
         return [
-            'message' => $this->subject['owner'].' mentioned you in '.$this->subject['title'],
+            'message' => $this->message(),
             'link' => $this->subject->path()
         ];
+    }
+
+    /**
+     * Get a message title for the notification.
+     */
+    public function message()
+    {
+        return sprintf('%s mentioned you in "%s"', $this->user()->username, $this->subject->title());
+    }
+
+    /**
+     * Get the associated user for the subject.
+     */
+    public function user()
+    {
+        return $this->subject instanceof Reply ? $this->subject->owner : $this->subject->creator;
     }
 }

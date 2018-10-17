@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasReputation;
 
     /**
      * The attributes that are mass assignable.
@@ -17,6 +17,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'avatar_path',
@@ -59,7 +60,7 @@ class User extends Authenticatable
      */
     public function getRouteKeyName()
     {
-        return 'name';
+        return 'username';
     }
 
     /**
@@ -98,7 +99,6 @@ class User extends Authenticatable
     public function confirm()
     {
         $this->confirmed = true;
-
         $this->confirmation_token = null;
 
         $this->save();

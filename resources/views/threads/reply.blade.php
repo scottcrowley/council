@@ -4,7 +4,7 @@
             <div class="level">
                 <h5 class="flex">
                 <a href="{{ route('profiles', $reply->owner) }}">
-                        {{ $reply->owner->name }}
+                        {{ $reply->owner->username }}
                     </a> said {{ $reply->created_at->diffForHumans() }}
                 </h5>
                 @if (Auth::check())

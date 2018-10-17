@@ -26,31 +26,20 @@ class ReplyTest extends TestCase
 
         $this->assertTrue($reply->wasJustPublished());
 
-        $reply->created_at =
-         Carbon::now()->subMonth();
+        $reply->created_at = Carbon::now()->subMonth();
 
         $this->assertFalse($reply->wasJustPublished());
-    }
-
-    /** @test */
-    public function it_can_detect_all_mention_users_in_the_body()
-    {
-        $reply = new Reply([
-            'body' => '@JaneDoe wants to speak to @JohnDoe.'
-        ]);
-
-        $this->assertEquals(['JaneDoe', 'JohnDoe'], $reply->mentionedUsers());
     }
 
     /** @test */
     public function it_wraps_mentioned_usernames_in_the_body_within_anchor_tags()
     {
         $reply = new Reply([
-            'body' => 'Hello @JaneDoe.'
+            'body' => 'Hello @Jane-Doe.'
         ]);
 
         $this->assertEquals(
-            'Hello <a href="/profiles/JaneDoe">@JaneDoe</a>.',
+            'Hello <a href="/profiles/Jane-Doe">@Jane-Doe</a>.',
             $reply->body
         );
     }
@@ -68,10 +57,10 @@ class ReplyTest extends TestCase
     }
 
     /** @test */
-    public function a_replys_body_is_sanitized_automatically()
+    public function a_reply_body_is_sanitized_automatically()
     {
-        $reply = make('App\Reply', ['body' => '<script>alert("bad")</script><p>This is ok</p>']);
+        $reply = make('App\Reply', ['body' => '<script>alert("bad")</script><p>This is okay.</p>']);
 
-        $this->assertEquals('<p>This is ok</p>', $reply->body);
+        $this->assertEquals('<p>This is okay.</p>', $reply->body);
     }
 }
