@@ -6,7 +6,9 @@
 
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <div class="dropdown-item" v-for="notification in notifications" :key="notification.id">
-                <a :href="notification.data.link" v-text="notification.data.message" @click="markAsRead(notification)"></a>
+                <a :href="notification.data.link" 
+                    v-text="notification.data.message" 
+                    @click.prevent="markAsRead(notification)"></a>
             </div>
         </div>
     </li>
@@ -25,8 +27,7 @@
         },
 
         created() {
-            axios.get('/profiles/' + window.App.user.name + '/notifications')
-                .then(response => this.notifications = response.data);
+            this.fetchNotifications();
         },
 
         computed: {
@@ -34,8 +35,16 @@
         },
 
         methods: {
+            fetchNotifications() {
+                axios.get('/profiles/' + window.App.user.name + '/notifications')
+                  .then(response => this.notifications = response.data);
+            },
             markAsRead(notification) {
-                axios.delete('/profiles/' + window.App.user.name + '/notifications/' + notification.id);
+                axios.delete('/profiles/' + window.App.user.name + '/notifications/' + notification.id)
+                    .then(response => {
+                        this.fetchNotifications();
+                        document.location.replace(response.data.link);
+                    });
             }
         }
     }
